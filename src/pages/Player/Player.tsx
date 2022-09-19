@@ -1,28 +1,32 @@
-import { Content } from "antd/lib/layout/layout"
-import { useEffect } from "react"
-import { Player as PlayerComponent } from "../../components"
-import { useAppDispatch, useAppSelector } from "../../hooks/redux"
-import { setVideoSrc, setRectangles } from "../../store/actionsCreators"
+import { Content } from 'antd/lib/layout/layout'
+import { useEffect, useRef } from 'react'
+import { Player as PlayerComponent, RectanglesList } from '../../components'
+import { useAppDispatch, useAppSelector } from '../../hooks/redux'
+import { FETCH_RECTANGLES_DATA, FETCH_VIDEO_SRC } from '../../store/actions'
 
 const Player = () => {
-  const { videoSrc } = useAppSelector(store => store)
+  const { videoSrc, rectangles } = useAppSelector(store => store)
   const dispatch = useAppDispatch()
-
-  const getVideoSrc = () => {
-    setTimeout(() => {
-      dispatch(setVideoSrc('http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'))
-    }, 1000)
-  }
+  const video = useRef<HTMLVideoElement | null>(null)
 
   useEffect(() => {
-    getVideoSrc()
-    console.log('+1')
-    dispatch({type: 'FETCH_RECTANGLES_DATA'})
+    dispatch({type: FETCH_RECTANGLES_DATA})
+    dispatch({type: FETCH_VIDEO_SRC})
   }, [])
+
+  const onClickByPosition = (start: number) => {
+    if (video.current)
+      video.current.currentTime = start
+  }
 
   return (
     <Content>
-      {!videoSrc ? '...loading' : <PlayerComponent src={videoSrc} />}
+      {!videoSrc && rectangles ? '...loading' : (
+        <>
+          <PlayerComponent src={videoSrc} rectangles={rectangles} start={0} videoRef={video}/>
+          <RectanglesList onClickByPosition={onClickByPosition}/>
+        </>
+      )}
     </Content>
   )
 }

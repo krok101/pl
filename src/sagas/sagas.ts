@@ -1,17 +1,21 @@
 import { call, put, takeEvery, takeLatest } from 'redux-saga/effects'
-import { getRectangles } from '../api';
-import { ASYNC_SET_RECTANGLES, FETCH_RECTANGLES_DATA } from '../store/actions';
+import { getRectangles, getVideoSRC } from '../api'
+import { FETCH_RECTANGLES_DATA, FETCH_VIDEO_SRC } from '../store/actions'
+import { setRectangles, setVideoSrc } from '../store/actionsCreators'
 
-// worker Saga: will be fired on USER_FETCH_REQUESTED actions
 function* fetchRectangles() {
-      const [ ...data ] = yield call(getRectangles);
-      console.log('rectangles:::', data)
-      yield put({type: "ASYNC_SET_RECTANGLES", data});
+  const [ ...data ] = yield call(getRectangles)
+  yield put(setRectangles(data))
 }
 
+function* fetchVideoSrc() {
+  const [ ...data ] = yield call(getVideoSRC)
+  yield put(setVideoSrc(data.join('')))
+}
 
 function* rootSaga() {
-  yield takeEvery(FETCH_RECTANGLES_DATA, fetchRectangles);
+  yield takeLatest(FETCH_RECTANGLES_DATA, fetchRectangles)
+  yield takeLatest(FETCH_VIDEO_SRC, fetchVideoSrc)
 }
 
 export default rootSaga

@@ -9,7 +9,7 @@ const App = () => {
         <Route path='/player' element={<Player />} />
       </Routes>
     </BrowserRouter>
-    )
+  )
 }
 
 export default App;

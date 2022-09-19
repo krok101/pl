@@ -1,21 +1,19 @@
+import { Rectangle as RC} from '../../../../types/types'
+
 interface Props {
   currentTime: number
-  duration: number
-  timestamp: number
-  zone: {
-    left: number
-    top: number
-    width: number
-    height: number
-  }
+  rectangle: RC
 }
 
-const Rectangle = ({duration, timestamp, zone, currentTime}: Props) => {
-  if (currentTime >= timestamp && currentTime <= timestamp + duration)
+const Rectangle = ({rectangle, currentTime}: Props) => {
+  const { timestamp, zone, duration } = rectangle
+  if (currentTime >= timestamp && currentTime <= timestamp + duration) {
     return <div style={{
-      ...zone,
-      position: 'absolute'
-    }}></div>
+        ...zone,
+        position: 'absolute',
+        background: 'green'
+      }}></div>
+  }
   return null
 }
 
